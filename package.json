@@ -1,0 +1,10 @@
+{
+  "name": "nuxt-streaming-cookie-repro",
+  "private": true,
+  "packageManager": "pnpm@12.6.0",
+  "scripts": {
+    "build": "pnpm -r build",
+    "check:4": "./check.sh apps/nuxt-4 4101",
+    "check:5": "./check.sh apps/nuxt-5 4102"
+  }
+}

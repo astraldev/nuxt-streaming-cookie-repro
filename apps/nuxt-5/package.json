@@ -1,5 +1,5 @@
 {
-  "name": "nuxt-5-nightly",
+  "name": "nuxt-5",
   "private": true,
   "type": "module",
   "scripts": { "build": "nuxt build", "start": "node .output/server/index.mjs" },

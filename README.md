@@ -1,27 +1,30 @@
-# Nuxt SSR streaming + late `useCookie` writes
+# Nuxt SSR streaming: `useCookie` writes during render
 
-With `experimental.ssrStreaming: true`, a `useCookie` write during render
-(here from a component 6 levels deep) is applied on the `app:rendered` hook,
-after the streamed response has already committed its headers.
+With `experimental.ssrStreaming: true`, a `useCookie` write made while the page renders (here from a component six levels deep) is applied on the `app:rendered` hook. By then the streamed response has already sent its status and headers.
 
 | App | Nuxt | Result |
 |---|---|---|
-| `nuxt-4.6` | 4.6.4 | `ERR_HTTP_HEADERS_SENT` is thrown, then `NUXT_E8009` (`DevalueError: Cannot stringify arbitrary non-POJOs`). The HTML is truncated and `__NUXT_DATA__` is never sent. |
-| `nuxt-5-nightly` | `nuxt-nightly@5x` | Page renders, but no `Set-Cookie` header is sent. The cookie is silently dropped. |
+| [`apps/nuxt-4`](apps/nuxt-4) | `4.6.4` | `setCookie` throws `ERR_HTTP_HEADERS_SENT`. The stream's error path then fails with `DevalueError` (`NUXT_E8009`). The HTML is cut off and `__NUXT_DATA__` is never sent, so the page cannot hydrate. |
+| [`apps/nuxt-5`](apps/nuxt-5) | `nuxt-nightly@5x` | The page renders, but no `Set-Cookie` header is sent. The write is dropped with no warning in a production build. |
 
-Pages: `/none` (control, no cookie), `/early` (written in the deep component's setup), `/late` (written after an `await`).
+Routes in each app:
+
+- `/none`: control, no cookie written
+- `/early`: cookie written in the deep component's `setup`
+- `/late`: cookie written after an `await` in the deep component
 
 ## Run
 
-```sh
-cd nuxt-4.6 && pnpm install --ignore-workspace && pnpm build && cd ..
-./check.sh nuxt-4.6 4101
+Requires pnpm (or bun) and Node 22.21+, 24.11+ or 26+.
 
-cd nuxt-5-nightly && pnpm install --ignore-workspace && pnpm build && cd ..
-./check.sh nuxt-5-nightly 4102
+```sh
+pnpm install
+pnpm build
+pnpm check:4
+pnpm check:5
 ```
 
-Expected output, Nuxt 4.6.4: `/none` has `payload-sent=1`, `/early` and `/late` have `payload-sent=0`, plus the error lines.
-Nuxt 5 nightly: all three have `payload-sent=1`, `set-cookie=0` on `/early` and `/late`.
+Each check starts the production server, requests the three routes, and prints whether a `Set-Cookie` header arrived and whether the closing `__NUXT_DATA__` payload was sent.
 
-Tested on Node 22.15.1.
+Expected on `apps/nuxt-4`: `/none` has `payload-sent=1`; `/early` and `/late` have `payload-sent=0` and print the `NUXT_E8009` error.
+Expected on `apps/nuxt-5`: all three have `payload-sent=1`, and `/early` and `/late` have `set-cookie=0`.
