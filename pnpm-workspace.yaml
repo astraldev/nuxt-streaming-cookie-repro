@@ -2,3 +2,10 @@ packages:
   - apps/*
 allowBuilds:
   esbuild: true
+minimumReleaseAgeExclude:
+  - '@nuxt/kit-nightly@5.0.0-2611172312-387a546'
+  - '@nuxt/nitro-server-nightly@5.0.0-2611172312-387a546'
+  - '@nuxt/schema-nightly@5.0.0-2611172312-387a546'
+  - '@nuxt/vite-builder-nightly@5.0.0-2611172312-387a546'
+  - '@nuxt/vite-server-nightly@5.0.0-2611172312-387a546'
+  - nuxt-nightly@5.0.0-2611172312-387a546

@@ -3,6 +3,6 @@
   "private": true,
   "type": "module",
   "scripts": { "build": "nuxt build", "start": "node .output/server/index.mjs" },
-  "dependencies": { "nuxt": "npm:nuxt-nightly@5x", "vue": "latest", "vue-router": "latest" },
+  "dependencies": { "nuxt": "npm:nuxt-nightly@5.0.0-2611172312-387a546", "vue": "latest", "vue-router": "latest" },
   "devDependencies": { "jiti": "latest" }
 }
