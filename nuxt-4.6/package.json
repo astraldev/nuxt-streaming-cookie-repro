@@ -1,0 +1,7 @@
+{
+  "name": "nuxt-4.6",
+  "private": true,
+  "type": "module",
+  "scripts": { "build": "nuxt build", "start": "node .output/server/index.mjs" },
+  "dependencies": { "nuxt": "4.6.4", "vue": "latest", "vue-router": "latest" }
+}
